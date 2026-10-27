@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-g51yUP+NoPBR1z0qRAwOOM9hnlPLcSSVsLd3k5vGlYw='; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<title>Mode Radar – retour de connexion</title>
+<style>body{font-family:-apple-system,system-ui,sans-serif;max-width:32rem;margin:4rem auto;padding:0 1rem;color:#222;line-height:1.5}a{color:#0a66d8}</style>
+</head>
+<body>
+<h1>Mode Radar</h1>
+<p id="status">Retour vers Mode Radar…</p>
+<p><a id="link" href="#" hidden>Revenir à Mode Radar</a></p>
+<p><small>Page relais personnelle : elle ne contient aucun secret, ne garde rien et n'envoie rien ailleurs.</small></p>
+<script>
+  // Relais : lit seulement « code » et « state » dans l'adresse et les passe à l'app Mac. Rien n'est gardé ni envoyé ailleurs.
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var code = (params.get("code") || "").replace(/#_$/, "");
+    var state = params.get("state") || "";
+    var status = document.getElementById("status");
+    var link = document.getElementById("link");
+    if (!/^[A-Za-z0-9_\-.]+$/.test(code) || !/^[A-Za-z0-9\-]+$/.test(state)) {
+      status.textContent = "Aucune autorisation reçue (connexion annulée ou refusée). Tu peux fermer cette page.";
+      return;
+    }
+    var target = "moderadar://instagram?code=" + encodeURIComponent(code) + "&state=" + encodeURIComponent(state);
+    history.replaceState(null, "", window.location.pathname);
+    link.href = target;
+    link.hidden = false;
+    status.textContent = "C'est fait. Tu peux fermer cette page.";
+    window.location.replace(target);
+  })();
+</script>
+</body>
+</html>
